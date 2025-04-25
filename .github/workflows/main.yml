@@ -1,0 +1,24 @@
+name: Windows RDP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 360
+
+    steps:
+    - name: Enable RDP
+      run: |
+        Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        net user runneradmin P@ssw0rd123
+        Add-LocalGroupMember -Group "Administrators" -Member "runneradmin"
+    - name: Get IP
+      run: |
+        echo "Your RDP IP is:"
+        ipconfig
+        echo "Username: runneradmin"
+        echo "Password: P@ssw0rd123"
+        Start-Sleep -Seconds 21600  # 6 jam
