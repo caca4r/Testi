@@ -1,24 +1,25 @@
-name: Windows RDP
+name: RDP
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  windows-rdp:
     runs-on: windows-latest
     timeout-minutes: 360
 
     steps:
     - name: Enable RDP
       run: |
-        Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Value 0
+        Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-        net user runneradmin P@ssw0rd123
-        Add-LocalGroupMember -Group "Administrators" -Member "runneradmin"
-    - name: Get IP
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name 'fDenyTSConnections' -Value 0
+        net user github P@ssword123!
+        net localgroup administrators github /add
+    - name: Display Connection Info
       run: |
-        echo "Your RDP IP is:"
+        Write-Host "RDP is now enabled"
         ipconfig
-        echo "Username: runneradmin"
-        echo "Password: P@ssw0rd123"
-        Start-Sleep -Seconds 21600  # 6 jam
+        Write-Host "Username: github"
+        Write-Host "Password: P@ssword123!"
+        Start-Sleep -Seconds 21600
